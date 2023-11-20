@@ -54,9 +54,13 @@ class BaseModel:
 
         dict_obj = self.__dict__.copy()
         dict_obj["__class__"] = self.__class__.__name__
-        if isinstance(dict_obj["created_at"], datetime):
+
+        # Check if 'created_at' and 'updated_at' are instances of datetime
+        if isinstance(dict_obj.get("created_at"), datetime):
             dict_obj["created_at"] = dict_obj["created_at"].isoformat()
-        if isinstance(dict_obj["updated_at"], datetime):
+
+        # Check if 'updated_at' exists and is an instance of datetime
+        if 'updated_at' in dict_obj and isinstance(dict_obj["updated_at"], datetime):
             dict_obj["updated_at"] = dict_obj["updated_at"].isoformat()
 
         return dict_obj
