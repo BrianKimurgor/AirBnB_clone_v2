@@ -35,6 +35,17 @@ class FileStorage:
         from models.amenity import Amenity
         from models.review import Review
 
+    def delete(self, obj=None):
+        """delete obj from _objects if inside"""
+        if obj is not None:
+            key = obj.__class__.__name__ + '.' + obj.id
+            if key in self.__objects:
+                del self.__objects[key]
+
+    def close(self):
+        """call reload() method for deserializing the JSON file to objects"""
+        self.reload()
+
         classes = {
                     'BaseModel': BaseModel, 'User': User, 'Place': Place,
                     'State': State, 'City': City, 'Amenity': Amenity,
