@@ -16,7 +16,7 @@ class TestMySQL(unittest.TestCase):
     conn = None
     curr = None
 
-    def setUp(self):
+    def connection(self):
         """Connecting mysqldb"""
 
         storage = DBStorage()
@@ -29,7 +29,7 @@ class TestMySQL(unittest.TestCase):
         )
         self.curr = self.conn.cursor()
 
-    def tearDown(self):
+    def disconnect(self):
         """ Disconnect from mysqldb"""
         self.curr.close()
         self.conn.close()
@@ -39,18 +39,18 @@ class TestMySQL(unittest.TestCase):
     def test_create_state(self):
         """Test create state"""
 
-        self.setUp()
+        self.connection()
         with patch('sys.stdout', new=io.StringIO()) as f:
             HBNBCommand().onecmd('create State name="California"')
             self.curr.execute("SELECT COUNT(*) FROM states")
             result = self.curr.fetchone()[0]
             self.assertEqual(result, 1)
-            self.tearDown()
+            self.disconnect()
 
     def test_create_city(self):
         """Test create city"""
 
-        self.setUp()
+        self.connection()
         with patch('sys.stdout', new=io.StringIO()) as f:
             HBNBCommand().onecmd('create State name="California"')
         id = f.getvalue()[:1]
@@ -60,7 +60,7 @@ class TestMySQL(unittest.TestCase):
             self.curr.execute("SELECT COUNT(*) FROM cities")
             result = self.curr.fetchone()[0]
             self.assertEqual(result, 1)
-            self.tearDown()
+            self.diconnect()
 
 
 if __name__ == '__main__':
