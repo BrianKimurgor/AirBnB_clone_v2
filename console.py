@@ -133,9 +133,11 @@ class HBNBCommand(cmd.Cmd):
                 if value.startswith('"') and value.endswith('"'):
                     value = (value[1:-1].replace('\\', '"')
                              .replace('_', ' '))
-                elif "." in value:
-                    value = float(value)
                 else:
+                    try:
+                        value = float(value)
+                    except ValueError:
+                        pass
                     try:
                         value = int(value)
                     except ValueError:
