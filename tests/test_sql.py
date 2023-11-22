@@ -18,6 +18,9 @@ class TestMySQL(unittest.TestCase):
 
     def setUp(self):
         """Connecting mysqldb"""
+
+        storage = DBStorage()
+        storage.reload()
         self.conn = MySQLdb.connect(
             host=getenv('HBNB_MYSQL_HOST'),
             user=getenv('HBNB_MYSQL_USER'),
