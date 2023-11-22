@@ -1,51 +1,62 @@
-#!/usr/bin/python3
-""" Tests for database"""
 import unittest
-from models.amenity import Amenity
-from models.city import City
-from models.place import Place
-from models.state import State
-from models.review import Review
-from models.user import User
+import MySQLdb
+from console import HBNBCommand
+import io
+from unittest.mock import patch
+from os import getenv
 from models.engine.db_storage import DBStorage
-from models.base_model import BaseModel
 
 
-class TestDBStorage(unittest.TestCase):
-    """ Tests for DBStorage class"""
-    
-    @classmethod
-    def setUpClass(cls):
-        """ Set up for the test suite """
-        
-        cls.db_storage = DBStorage()
-        cls.db_storage.reload()
-        
-    @classmethod
-    def tearDownClass(cls):
-        """ Tear down after all tests """
-        cls.db_storage.close()
-        
-    def test_all_methods(self):
-        """ Check if all methods are working correctly """
-        
-        users = self.db_storage.all(User)
-        self.assertIsInstance(users, dict)
-        
-        states = self.db_storage.all(State)
-        self.assertIsInstance(states, dict)
-        
-        citites = self.db_storage.all(City)
-        self.assertIsInstance(citites, dict)
-        
-        places = self.db_storage.all(Place)
-        self.assertIsInstance(places, dict)
-        
-        amenities = self.db_storage.all(Amenity)
-        self.assertIsInstance(amenities, dict)
-        reviews = self.db_storage.all(Review)
-        self.assertIsInstance(reviews, dict)
-        
-    
-if __name__ == "__main__":
+@unittest.skipIf(getenv('HBNB_TYPE_STORAGE') != 'db', "Not DBStorage")
+class TestMySQL(unittest.TestCase):
+    """Test for the sql database"""
+
+    conn = None
+    curr = None
+
+    def setUp(self):
+        """Connecting mysqldb"""
+        self.conn = MySQLdb.connect(
+            host=getenv('HBNB_MYSQL_HOST'),
+            user=getenv('HBNB_MYSQL_USER'),
+            passwd=getenv('HBNB_MYSQL_PASSWORD'),
+            db=getenv('HBNB_MYSQL_DB'),
+        )
+        self.curr = self.conn.cursor()
+
+    def tearDown(self):
+        """ Disconnect from mysqldb"""
+        self.curr.close()
+        self.conn.close()
+        self.conn = None
+        self.curr = None
+
+    def test_create_state(self):
+        """Test create state"""
+
+        self.setUp()
+        with patch('sys.stdout', new=io.StringIO()) as f:
+            HBNBCommand().onecmd('create State name="California"')
+            self.curr.execute("SELECT COUNT(*) FROM states")
+            result = self.curr.fetchone()[0]
+            self.assertEqual(result, 1)
+            self.tearDown()
+
+    def test_create_city(self):
+        """Test create city"""
+
+        self.setUp()
+        with patch('sys.stdout', new=io.StringIO()) as f:
+            HBNBCommand().onecmd('create State name="California"')
+        id = f.getvalue()[:1]
+        with patch('sys.stdout', new=io.StringIO()) as f:
+            HBNBCommand().onecmd(f'''create City state_id="{id}"
+                                 name="San_Francisco"''')
+            self.curr.execute("SELECT COUNT(*) FROM cities")
+            result = self.curr.fetchone()[0]
+            self.assertEqual(result, 1)
+            self.tearDown()
+
+
+if __name__ == '__main__':
     unittest.main()
