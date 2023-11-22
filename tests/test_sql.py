@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+"""Test the sql database"""
 import unittest
 import MySQLdb
 from console import HBNBCommand
