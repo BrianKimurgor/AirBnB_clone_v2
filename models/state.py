@@ -11,7 +11,8 @@ class State(BaseModel, Base):
     name = Column(String(128), nullable=False)
 
     # For DBStorage
-    cities = relationship("City", backref="state", cascade="all, delete, delete-orphan")
+    cities = relationship(
+        "City", backref="state", cascade="all, delete, delete-orphan")
 
     # For FileStorage
     @property
