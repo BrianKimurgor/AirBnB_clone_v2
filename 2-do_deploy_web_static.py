@@ -2,14 +2,17 @@
 # Fabfile to distribute an archive to a web server.
 print ('importing file....')
 import os.path
+#import logging
 from fabric.api import env
 from fabric.api import put
 from fabric.api import run
 
+#logging.basicConfig(level=logging.DEBUG)
+
 print('connecting to hosts')
-env.hosts = ["100.25.157.4", "34.229.56.81"]
+env.hosts = ["34.224.2.244", "18.233.62.156"]
 env.user = 'ubuntu'
-env.key_filename = '~/.ssh/id_rsa'
+env.key_filename = '~/.ssh/school'
 #env.forward_agent = True
 
 print('performing do deploy function....')

@@ -2,7 +2,7 @@
 # Sets up a web server for deployment of web_static.
 
 # Set the script to exit immediately if any command exits with a non-zero status
-set -e
+#set -e
 
 # Create necessary directories
 echo "Creating directories..."
@@ -56,7 +56,7 @@ server {
  }
 
  location /redirect_me {
-    return 301 http://cuberule.com/;
+    return 301 https://github.com/BrianKimurgor;
  }
 
  error_page 404 /404.html;
@@ -72,4 +72,4 @@ echo "Restarting Nginx..."
 sudo systemctl restart nginx
 
 # Exit the script with a status of 0
-exit 0
+#exit 0
